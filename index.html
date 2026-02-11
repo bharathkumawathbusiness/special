@@ -1,0 +1,371 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>For You | Valentine 2026</title>
+    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,700;1,700&family=Inter:wght@300;400;600&display=swap" rel="stylesheet">
+    <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
+
+    <style>
+        :root {
+            --primary: #ff4d6d;
+            --primary-hover: #ff758f;
+            --bg-dark: #0a0a0c;
+            --glass: rgba(255, 255, 255, 0.03);
+            --glass-border: rgba(255, 255, 255, 0.1);
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            height: 100vh;
+            overflow: hidden;
+            font-family: 'Inter', sans-serif;
+            background-color: var(--bg-dark);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: #fff;
+        }
+
+        /* Animated Gradient Background */
+        .bg-glow {
+            position: absolute;
+            top: 0; left: 0; width: 100%; height: 100%;
+            background: 
+                radial-gradient(circle at 20% 30%, rgba(255, 77, 109, 0.15), transparent 40%),
+                radial-gradient(circle at 80% 70%, rgba(114, 9, 183, 0.15), transparent 40%);
+            z-index: -1;
+            animation: pulseBg 8s ease-in-out infinite alternate;
+        }
+
+        @keyframes pulseBg {
+            from { opacity: 0.6; }
+            to { opacity: 1; }
+        }
+
+        /* Floating Hearts Canvas */
+        #heartCanvas {
+            position: absolute;
+            top: 0; left: 0;
+            pointer-events: none;
+            z-index: 0;
+        }
+
+        .card {
+            position: relative;
+            z-index: 10;
+            backdrop-filter: blur(40px) saturate(180%);
+            -webkit-backdrop-filter: blur(40px) saturate(180%);
+            background: var(--glass);
+            border: 1px solid var(--glass-border);
+            padding: 80px 50px;
+            border-radius: 40px;
+            text-align: center;
+            width: 90%;
+            max-width: 550px;
+            box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.5);
+            animation: reveal 1.2s cubic-bezier(0.16, 1, 0.3, 1);
+        }
+
+        @keyframes reveal {
+            from { opacity: 0; transform: translateY(30px) scale(0.95); }
+            to { opacity: 1; transform: translateY(0) scale(1); }
+        }
+
+        h1 {
+            font-family: 'Playfair Display', serif;
+            font-size: clamp(32px, 5vw, 48px);
+            font-weight: 700;
+            line-height: 1.2;
+            margin-bottom: 20px;
+            background: linear-gradient(to bottom, #fff, #bbb);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .subtext {
+            font-size: 16px;
+            font-weight: 300;
+            letter-spacing: 2px;
+            text-transform: uppercase;
+            opacity: 0.6;
+            margin-bottom: 40px;
+        }
+
+        .buttons {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            gap: 24px;
+            min-height: 80px;
+        }
+
+        button {
+            outline: none;
+            cursor: pointer;
+            font-family: 'Inter', sans-serif;
+            font-weight: 600;
+            font-size: 15px;
+            letter-spacing: 1px;
+            transition: all 0.4s cubic-bezier(0.23, 1, 0.32, 1);
+        }
+
+        .yes-btn {
+            background: var(--primary);
+            color: white;
+            padding: 18px 45px;
+            border-radius: 50px;
+            border: none;
+            box-shadow: 0 10px 20px rgba(255, 77, 109, 0.3);
+        }
+
+        .yes-btn:hover {
+            transform: translateY(-3px) scale(1.05);
+            background: var(--primary-hover);
+            box-shadow: 0 15px 30px rgba(255, 77, 109, 0.5);
+        }
+
+        .no-btn {
+            background: transparent;
+            color: white;
+            padding: 16px 40px;
+            border-radius: 50px;
+            border: 1px solid rgba(255, 255, 255, 0.2);
+        }
+
+        /* Success State */
+        .success-content {
+            display: none;
+        }
+
+        .success-content h2 {
+            font-family: 'Playfair Display', serif;
+            font-size: 42px;
+            margin-bottom: 10px;
+        }
+
+        .stats {
+            font-size: 14px;
+            opacity: 0.5;
+            margin-top: 20px;
+            font-style: italic;
+        }
+
+        #finalMessage {
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            text-align: center;
+            opacity: 0;
+            visibility: hidden;
+            transition: all 3s ease;
+            z-index: 100;
+            width: 100%;
+        }
+
+        #finalMessage h1 {
+            font-size: clamp(60px, 10vw, 120px);
+            font-style: italic;
+            letter-spacing: -2px;
+            background: linear-gradient(to bottom, #fff, #ff4d6d);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            filter: drop-shadow(0 0 30px rgba(255, 77, 109, 0.5));
+        }
+
+        /* The Secret Button */
+        .secret-trigger {
+            margin-top: 30px;
+            background: none;
+            border: none;
+            color: var(--primary);
+            font-size: 12px;
+            letter-spacing: 3px;
+            text-transform: uppercase;
+            opacity: 0.4;
+            cursor: pointer;
+            display: none;
+            animation: fadeIn 2s ease;
+        }
+
+        .secret-trigger:hover { opacity: 1; letter-spacing: 5px; }
+        @keyframes fadeIn { from { opacity: 0; } to { opacity: 0.4; } }
+    </style>
+</head>
+<body>
+
+<div class="bg-glow" id="glow"></div>
+<canvas id="heartCanvas"></canvas>
+
+<div class="card" id="mainCard">
+    <div id="askContainer">
+        <div class="subtext" id="statusText">February 14, 2026</div>
+        <h1 id="question">Will you be my Valentine?</h1>
+        
+        <div class="buttons" id="btnGroup">
+            <button class="yes-btn" onclick="celebrate()">YES, DEFINITELY</button>
+            <button class="no-btn" id="noBtn" onmouseover="moveNo()">NO</button>
+        </div>
+    </div>
+
+    <div class="success-content" id="successArea">
+        <h2>Finally! ❤️</h2>
+        <p style="opacity: 0.8;">I knew you'd make the right choice.</p>
+        <div class="stats" id="attemptsText"></div>
+        <button class="secret-trigger" id="secretBtn" onclick="revealSecret()">Don't tap this...</button>
+    </div>
+</div>
+
+<div id="finalMessage">
+    <h1>I love you.</h1>
+</div>
+
+<script>
+    let attempts = 0;
+    const noBtn = document.getElementById('noBtn');
+    const statusText = document.getElementById('statusText');
+    
+    const messages = [
+        "Think about it again...",
+        "Are you absolutely sure?",
+        "System Error: Unwise choice.",
+        "That button is broken, try the other one.",
+        "You're being very difficult!",
+        "Okay, now you're just playing."
+    ];
+
+    function moveNo() {
+        attempts++;
+        // Update subtext with a classy "warning"
+        if (attempts <= messages.length) {
+            statusText.innerText = messages[attempts - 1];
+            statusText.style.color = "var(--primary)";
+        }
+
+        // Sophisticated random movement within the card bounds
+        const x = Math.random() * 150 - 75;
+        const y = Math.random() * 100 - 50;
+        noBtn.style.transform = `translate(${x}px, ${y}px)`;
+        
+        // Slightly shrink the "No" button
+        const scale = Math.max(0.5, 1 - (attempts * 0.08));
+        noBtn.style.scale = scale;
+
+        if (attempts > 8) {
+            noBtn.style.opacity = "0";
+            noBtn.style.pointerEvents = "none";
+        }
+    }
+
+    function revealSecret() {
+        // Step 1: Fade out the UI
+        document.getElementById('mainCard').style.opacity = '0';
+        document.getElementById('mainCard').style.transform = 'scale(0.9) translateY(-20px)';
+        document.getElementById('glow').style.opacity = '0';
+        
+        // Step 2: Darken the world
+        document.body.style.background = '#000';
+        
+        // Step 3: Reveal the heart-stopping text
+        setTimeout(() => {
+            document.getElementById('mainCard').style.display = 'none';
+            const final = document.getElementById('finalMessage');
+            final.style.visibility = 'visible';
+            final.style.opacity = '1';
+            
+            // Slow down the floating hearts for a romantic vibe
+            hearts.forEach(h => { h.speed = 0.2; h.opacity = 0.8; });
+        }, 1500);
+    }
+
+    function celebrate() {
+        // Hide original content
+        document.getElementById('askContainer').style.display = 'none';
+        
+        // Show success content
+        const successArea = document.getElementById('successArea');
+        successArea.style.display = 'block';
+        document.getElementById('attemptsText').innerText = `You tried to decline ${attempts} times. Nice try.`;
+        document.getElementById('secretBtn').style.display = 'inline-block';
+        // Premium Confetti Effect
+        const duration = 5 * 1000;
+        const animationEnd = Date.now() + duration;
+        const defaults = { startVelocity: 30, spread: 360, ticks: 60, zIndex: 0 };
+
+        function randomInRange(min, max) {
+            return Math.random() * (max - min) + min;
+        }
+
+        const interval = setInterval(function() {
+            const timeLeft = animationEnd - Date.now();
+
+            if (timeLeft <= 0) {
+                return clearInterval(interval);
+            }
+
+            const particleCount = 50 * (timeLeft / duration);
+            confetti({ ...defaults, particleCount, origin: { x: randomInRange(0.1, 0.3), y: Math.random() - 0.2 } });
+            confetti({ ...defaults, particleCount, origin: { x: randomInRange(0.7, 0.9), y: Math.random() - 0.2 } });
+        }, 250);
+    }
+
+    // --- Subtle Floating Hearts Background Logic ---
+    const canvas = document.getElementById('heartCanvas');
+    const ctx = canvas.getContext('2d');
+    let hearts = [];
+
+    function resize() {
+        canvas.width = window.innerWidth;
+        canvas.height = window.innerHeight;
+    }
+
+    class Heart {
+        constructor() {
+            this.reset();
+        }
+        reset() {
+            this.x = Math.random() * canvas.width;
+            this.y = canvas.height + Math.random() * 100;
+            this.size = Math.random() * 15 + 5;
+            this.speed = Math.random() * 1 + 0.5;
+            this.opacity = Math.random() * 0.5;
+        }
+        update() {
+            this.y -= this.speed;
+            if (this.y < -20) this.reset();
+        }
+        draw() {
+            ctx.fillStyle = `rgba(255, 77, 109, ${this.opacity})`;
+            ctx.font = `${this.size}px serif`;
+            ctx.fillText("❤️", this.x, this.y);
+        }
+    }
+
+    function init() {
+        resize();
+        for (let i = 0; i < 20; i++) hearts.push(new Heart());
+        animate();
+    }
+
+    function animate() {
+        ctx.clearRect(0, 0, canvas.width, canvas.height);
+        hearts.forEach(h => {
+            h.update();
+            h.draw();
+        });
+        requestAnimationFrame(animate);
+    }
+
+    window.addEventListener('resize', resize);
+    init();
+</script>
+
+</body>
+</html>
