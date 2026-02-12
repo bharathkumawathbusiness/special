@@ -181,18 +181,51 @@
         }
 
         /* The Secret Button */
+
         .secret-trigger {
             margin-top: 30px;
-            background: none;
+            background: linear-gradient(90deg, var(--primary) 60%, var(--primary-hover) 100%);
             border: none;
-            color: var(--primary);
-            font-size: 12px;
+            color: #fff;
+            font-size: 13px;
             letter-spacing: 3px;
             text-transform: uppercase;
-            opacity: 0.4;
+            opacity: 0.92;
             cursor: pointer;
             display: none;
-            animation: fadeIn 2s ease;
+            animation: fadeIn 2s ease, heartbeat 1.2s infinite;
+            border-radius: 30px;
+            padding: 12px 32px;
+            box-shadow: 0 4px 24px 0 rgba(255,77,109,0.18), 0 1.5px 6px 0 rgba(0,0,0,0.08);
+            font-weight: 600;
+            transition: background 0.3s, box-shadow 0.3s, opacity 0.3s;
+        }
+
+        @keyframes heartbeat {
+            0% {
+                transform: scale(1);
+            }
+            10% {
+                transform: scale(1.1);
+            }
+            20% {
+                transform: scale(1.2);
+            }
+            30% {
+                transform: scale(1.1);
+            }
+            40% {
+                transform: scale(1.2);
+            }
+            50% {
+                transform: scale(1.1);
+            }
+            60% {
+                transform: scale(1);
+            }
+            100% {
+                transform: scale(1);
+            }
         }
 
         .secret-trigger:hover { opacity: 1; letter-spacing: 5px; }
@@ -206,7 +239,7 @@
 
 <div class="card" id="mainCard">
     <div id="askContainer">
-        <div class="subtext" id="statusText">February 14, 2026</div>
+        <div class="subtext" id="statusText">Hey Vee❤️</div>
         <h1 id="question">Will you be my Valentine?</h1>
         
         <div class="buttons" id="btnGroup">
@@ -219,12 +252,12 @@
         <h2>Finally! ❤️</h2>
         <p style="opacity: 0.8;">I knew you'd make the right choice.</p>
         <div class="stats" id="attemptsText"></div>
-        <button class="secret-trigger" id="secretBtn" onclick="revealSecret()">Don't tap this...</button>
+        <button class="secret-trigger" id="secretBtn" onclick="revealSecret()">Open My Heart ❤️</button>
     </div>
 </div>
 
 <div id="finalMessage">
-    <h1>I love you.</h1>
+    <h1>I love you</h1>
 </div>
 
 <script>
@@ -233,12 +266,14 @@
     const statusText = document.getElementById('statusText');
     
     const messages = [
-        "Think about it again...",
-        "Are you absolutely sure?",
-        "System Error: Unwise choice.",
-        "That button is broken, try the other one.",
-        "You're being very difficult!",
-        "Okay, now you're just playing."
+        "Nice try! This button is on vacation.",
+        "Oops! Did you mean YES?",
+        "This button only speaks 'YES'.",
+        "Are you sure? The universe ships us.",
+        "Nope! Plot twist: You love me.",
+        "404 Error: 'No' not found.",
+        "You just activated the secret love police!",
+        "Keep going, maybe something magical will happen..."
     ];
 
     function moveNo() {
